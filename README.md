@@ -1,12 +1,10 @@
 # misc
 
-GOUSTO TEST
-
-Ubuntu
-Tomcat 8
-Autoscaling with auto scaling groups
-2 instances
-Alerts
+* Ubuntu
+* Tomcat 8
+* Autoscaling with auto scaling groups
+* 2 instances
+* Alerts
 
 
 CloudFormation
@@ -21,6 +19,7 @@ CloudFormation
 Ansible
     dist-upgrade
     download tomcat8 debs install them one by one
+    install ansible latest form ubuntu PPA: ppa:ansible/ansible
     TOMCAT8
         # template for: /etc/tomcat8/tomcat-users.xml
         # restart tomcat
