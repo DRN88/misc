@@ -10,22 +10,23 @@
         "InstanceType" : "t2.micro",
         "KeyName" : "test",
         "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
-            "#!/bin/bash -xe\n",
-            "apt-get update\n",
-            "add-apt-repository -y ppa:ansible/ansible\n",
-            "apt-get -f install git ansible\n",
+          "#!/bin/bash -xe\n",
 
-            "cat << 'EOT' > /home/ubuntu/.ssh/config\n",
-            "Host github-drn88\n"
-            "User git\n"
-            "  Hostname github.com\n"
-            "  Port 22\n"
-            "  IdentityFile ~/.ssh/dpkey1.pem\n"
-            "  StrictHostKeyChecking no\n"
-            "  UserKnownHostsFile=/dev/null\n"
-            "EOT\n"
+          "apt-get update\n",
+          "add-apt-repository -y ppa:ansible/ansible\n",
+          "apt-get -fy install git ansible\n",
+
+          "mkdir -p /root/.ssh -m 700\n",
+          "wget https://github.com/DRN88/misc/raw/master/gousto/github/sshconfig -O /root/.ssh/config\n",
+          "wget https://github.com/DRN88/misc/raw/master/gousto/github/dpkey1.pem -O /root/.ssh/dpkey1.pem\n",
+          "chmod 600 /root/.ssh/config /root/.ssh/dpkey1.pem\n",
+
+          "git clone git@github-drn88:DRN88/misc.git /root/repoclone\n",
+          "rm -rf /etc/ansible\n",
+          "ln -s /root/repoclone/gousto/ansible/ /etc/ansible\n",
+
+          "ansible-playbook /etc/ansible/site.yml\n"
         ]]}}
-        },
       }
     }
   }
