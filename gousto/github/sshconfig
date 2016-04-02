@@ -1,0 +1,7 @@
+Host github-drn88
+    User git
+    Hostname github.com
+    Port 22
+    IdentityFile ~/.ssh/dpkey1.pem
+    StrictHostKeyChecking no
+    UserKnownHostsFile=/dev/null
