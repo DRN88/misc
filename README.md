@@ -1,6 +1,20 @@
 ## Misc Repository
 
-* Ubuntu
+### Usage
+* Edit CloudFormation to suite your own AWS Account and requirements
+  * Edit ImageId
+  * Edit SecurityGroups
+  * Edit KeyName
+* Get the your own LoadBalancer URL
+* Run curl to test
+``` bash
+dorian@drnvm:~$ curl http://abc-ClojureELB-1AKHHFH4F7FQ5-499782227.eu-central-1.elb.amazonaws.com:8080/clojure-collector-1.1.0-standalone/i
+GIF89a����!�,D;dorian@drnvm:~$
+```
+* PROFIT
+
+## Used tech
+* Ubuntu 14.04 LTS
 * Tomcat 7
 * Autoscaling with auto scaling groups
 * 2 instances
@@ -28,12 +42,3 @@
   * Download/Deploy clojure-collector-1.1.0-standalone.war to /var/lib/tomcat8/webapps/clojure-collector-1.1.0-standalone.war
   * Fix permission on the war file for tomcat7 user and group
   * Restart tomcat to start the app
-
-### Usage
-* Get the LoadBalancer URL
-* Run curl to test
-``` bash
-dorian@drnvm:~$ curl http://abc-ClojureELB-1AKHHFH4F7FQ5-499782227.eu-central-1.elb.amazonaws.com:8080/clojure-collector-1.1.0-standalone/i
-GIF89a����!�,D;dorian@drnvm:~$
-```
-* PROFIT
