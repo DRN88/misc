@@ -1,3 +1,6 @@
 ---
 - name: Install Tomcat 7
-  apt: name=tomcat7 state=present
+  apt: name={{item}} state=installed
+  with_items:
+    - tomcat7
+    - tomcat7-admin
