@@ -1,0 +1,70 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "SimpleConfig" : {
+     "Type" : "AWS::AutoScaling::LaunchConfiguration",
+     "Properties" : {
+        "ImageId" : "ami-87564feb",
+        "SecurityGroups" : "myExistingEC2SecurityGroup",
+        "InstanceType" : "m1.micro",
+        "KeyName" : "testkey",
+        "Metadata" : {
+          "AWS::CloudFormation::Init" : {
+            "bootstrap" : {
+              "packages" : {
+                "apt" : {
+                  "git" : [],
+                }
+              },
+              "commands" : {
+                "install_ansible_ppa" : {
+                  "command" : "add-apt-repository -y ppa:ansible/ansible",
+                  "command" : "apt-get update",
+                  "command" : "apt-get -y install ansible"
+                }
+              }
+            }
+        }
+     }
+  },
+
+  "MyServerGroup" : {
+     "Type" : "AWS::AutoScaling::AutoScalingGroup",
+     "Properties" : {
+        "AvailabilityZones" : { "Fn::GetAZs" : ""},
+        "LaunchConfigurationName" : { "Ref" : "SimpleConfig" },
+        "MinSize" : "1",
+        "MaxSize" : "3",
+        "LoadBalancerNames" : [ { "Ref" : "LB" } ]
+     }
+  },
+
+  "ScaleUpPolicy" : {
+     "Type" : "AWS::AutoScaling::ScalingPolicy",
+     "Properties" : {
+        "AdjustmentType" : "ChangeInCapacity",
+        "AutoScalingGroupName" : { "Ref" : "asGroup" },
+        "Cooldown" : "1",
+        "ScalingAdjustment" : "1"
+     }
+  },
+  "CPUAlarmHigh": {
+     "Type": "AWS::CloudWatch::Alarm",
+     "Properties": {
+        "EvaluationPeriods": "1",
+        "Statistic": "Average",
+        "Threshold": "70",
+        "AlarmDescription": "Alarm if CPU too high or metric disappears indicating instance is down",
+        "Period": "10",
+        "AlarmActions": [ { "Ref": "ScaleUpPolicy" } ],
+        "Namespace": "AWS/EC2",
+        "Dimensions": [ {
+           "Name": "AutoScalingGroupName",
+           "Value": { "Ref": "asGroup" }
+        } ],
+        "ComparisonOperator": "GreaterThanThreshold",
+        "MetricName": "CPUUtilization"
+     }
+  },
+
+}
