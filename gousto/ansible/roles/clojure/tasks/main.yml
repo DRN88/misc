@@ -1,3 +1,4 @@
 ---
-- name Downloading Clojure WAR to tomcat webapps folder
+- name: Downloading Clojure WAR to tomcat webapps folder
   get_url: url=http://d2io1hx8u877l0.cloudfront.net/2-collectors/clojure-collector/clojure-collector-1.1.0-standalone.war dest=/var/lib/tomcat7/webapps/ mode=0660
+  notify: restart tomcat7
