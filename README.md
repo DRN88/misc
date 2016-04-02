@@ -1,4 +1,4 @@
-# misc
+# Misc Repository
 
 * Ubuntu
 * Tomcat 8
@@ -7,19 +7,19 @@
 * Alerts
 
 
-CloudFormation
-    Create instances
-    Create autoscaling group
-    AWS::CloudFormation::Init
-        PACKAGES ansible git
-        FILES ssh config with deployment key for ansible using github
-        COMMANDS Checkout ansible code. Start ansible code
-    Autoscaling Group
+## CloudFormation
+* Create instances
+* Create autoscaling group
+* AWS::CloudFormation::Init
+  * PACKAGES install ansible latest form ubuntu PPA: ppa:ansible/ansible and git
+  * FILES ssh config with deployment key for ansible using github
+  * COMMANDS Checkout ansible code. Start ansible code
+  * Autoscaling Group
 
 Ansible
     dist-upgrade
     download tomcat8 debs install them one by one
-    install ansible latest form ubuntu PPA: ppa:ansible/ansible
+
     TOMCAT8
         # template for: /etc/tomcat8/tomcat-users.xml
         # restart tomcat
