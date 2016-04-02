@@ -1,8 +1,9 @@
 ---
 - name: Downloading Clojure WAR to tomcat webapps folder
-  get_url: url=http://d2io1hx8u877l0.cloudfront.net/2-collectors/clojure-collector/clojure-collector-1.1.0-standalone.war dest=/var/lib/tomcat7/webapps/ mode=0666
+  get_url: url=http://d2io1hx8u877l0.cloudfront.net/2-collectors/clojure-collector/clojure-collector-1.1.0-standalone.war dest=/var/lib/tomcat7/webapps/
   notify: restart tomcat7
   register: clojurewar
 
 - name: Fixing permission for tomcat on Clojure war file
-  debug: var=clojurewar
+  file: path={{ clojurewar.dest }} owner=tomcat7 group=tomcat7
+  #debug: var=clojurewar
