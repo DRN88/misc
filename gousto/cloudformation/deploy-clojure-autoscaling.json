@@ -1,0 +1,96 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Resources" : {
+
+    "ClojureLaunchConfig" : {
+      "Type" : "AWS::AutoScaling::LaunchConfiguration",
+      "Properties" : {
+        "ImageId" : "ami-87564feb",
+        "SecurityGroups" : [ "ALLOWANY" ],
+        "InstanceType" : "t2.micro",
+        "KeyName" : "test",
+        "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
+          "#!/bin/bash -xe\n",
+
+          "apt-get update\n",
+          "add-apt-repository -y ppa:ansible/ansible\n",
+          "apt-get -fy install git ansible\n",
+
+          "mkdir -p /root/.ssh -m 700\n",
+          "wget https://github.com/DRN88/misc/raw/master/gousto/github/sshconfig -O /root/.ssh/config\n",
+          "wget https://github.com/DRN88/misc/raw/master/gousto/github/dpkey1.pem -O /root/.ssh/dpkey1.pem\n",
+          "chmod 600 /root/.ssh/config /root/.ssh/dpkey1.pem\n",
+
+          "git clone git@github-drn88:DRN88/misc.git /root/repoclone\n",
+          "rm -rf /etc/ansible\n",
+          "ln -s /root/repoclone/gousto/ansible/ /etc/ansible\n",
+
+          "ansible-playbook /etc/ansible/site.yml\n"
+        ]]}}
+      }
+    },
+
+    "ClojureELB" : {
+      "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties" : {
+        "AvailabilityZones" : { "Fn::GetAZs" : ""},
+        "Listeners" : [ {
+          "LoadBalancerPort" : "8080",
+          "InstancePort" : "8080",
+          "Protocol" : "HTTP"
+        } ],
+        "HealthCheck" : {
+          "Target" : {
+            "Fn::Join" : [ "", [ "HTTP:", "8080", "/" ] ]
+          },
+          "HealthyThreshold" : "3",
+          "UnhealthyThreshold" : "5",
+          "Interval" : "10",
+          "Timeout" : "3"
+        }
+      }
+    },
+
+    "ClojureServerGroup" : {
+       "Type" : "AWS::AutoScaling::AutoScalingGroup",
+       "Properties" : {
+          "AvailabilityZones" : { "Fn::GetAZs" : ""},
+          "LaunchConfigurationName" : { "Ref" : "ClojureLaunchConfig" },
+          "MinSize" : "2",
+          "MaxSize" : "4",
+          "LoadBalancerNames" : [ { "Ref" : "ClojureELB" } ]
+       },
+       "DependsOn": "ClojureELB"
+    },
+
+    "ScaleUpPolicy" : {
+       "Type" : "AWS::AutoScaling::ScalingPolicy",
+       "Properties" : {
+          "AdjustmentType" : "ChangeInCapacity",
+          "AutoScalingGroupName" : { "Ref" : "ClojureServerGroup" },
+          "Cooldown" : "1",
+          "ScalingAdjustment" : "1"
+       }
+    },
+
+    "CPUAlarmHigh": {
+       "Type": "AWS::CloudWatch::Alarm",
+       "Properties": {
+          "EvaluationPeriods": "1",
+          "Statistic": "Average",
+          "Threshold": "70",
+          "AlarmDescription": "Alarm if CPU too high or metric disappears indicating instance is down",
+          "Period": "600",
+          "AlarmActions": [ { "Ref": "ScaleUpPolicy" } ],
+          "Namespace": "AWS/EC2",
+          "Dimensions": [ {
+             "Name": "AutoScalingGroupName",
+             "Value": { "Ref": "ClojureServerGroup" }
+          } ],
+          "ComparisonOperator": "GreaterThanThreshold",
+          "MetricName": "CPUUtilization"
+       }
+    }
+  }
+}
