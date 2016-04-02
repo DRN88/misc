@@ -1,4 +1,4 @@
-# Misc Repository
+## Misc Repository
 
 * Ubuntu
 * Tomcat 8
@@ -6,8 +6,7 @@
 * 2 instances
 * Alerts
 
-
-## CloudFormation
+### CloudFormation
 * Create instances
 * Create autoscaling group
 * AWS::CloudFormation::Init
@@ -16,12 +15,8 @@
   * COMMANDS Checkout ansible code. Start ansible code
   * Autoscaling Group
 
-Ansible
-    dist-upgrade
-    download tomcat8 debs install them one by one
-
-    TOMCAT8
-        # template for: /etc/tomcat8/tomcat-users.xml
-        # restart tomcat
-    get WAR clojure WAR file: download it to: /var/lib/tomcat8/webapps/clojure-collector-1.1.0-standalone.war
-    Deploy war file by restarting tomcat8
+### Ansible
+* download tomcat8 debs install them one by one
+* TOMCAT7
+  * Download/Deploy clojure-collector-1.1.0-standalone.war to /var/lib/tomcat8/webapps/clojure-collector-1.1.0-standalone.war
+  * Restarting tomcat to start the app
