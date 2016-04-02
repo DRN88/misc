@@ -5,4 +5,5 @@
 
   roles:
     - common
-    - tomcat8
+    - tomcat7
+    - clojure
