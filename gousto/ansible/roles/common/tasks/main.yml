@@ -1,0 +1,14 @@
+- name: Install default packages
+  apt: name={{item}} state=installed
+  with_items:
+    - tcptraceroute
+    - nmap
+    - iftop
+    - iotop
+    - htop
+    - screen
+    - unzip
+    - unrar
+    - tree
+    - tcpdump
+  register: install_pkg1

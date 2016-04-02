@@ -1,0 +1,8 @@
+---
+
+- hosts: clojure
+  remote_user: ubuntu
+
+  roles:
+    - common
+    - tomcat8
